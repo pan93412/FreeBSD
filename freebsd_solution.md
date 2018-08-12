@@ -88,11 +88,11 @@ Tag: #Xorg #MATE #LightDM #sysrc
 > Note: 若開機後未正常進入畫面，請手動輸入 `startx` 進去，或是輸入
 > `sudo lightdm` 進去即可！
 
-## 設定 Fcitx 輸入法
+## 設定 IBus 輸入法
 接續自《安裝 Xorg 環境》<br/>
-Tag: #Fcitx #MATE #chewing
+Tag: #IBus #MATE #chewing
 
-1. 安裝 Fcitx 與新酷音<br>
+1. 安裝 Ibus 與新酷音<br>
    `# pkg install zh-fcitx zh-fcitx-chewing`
 
 2. 建立 `.xprofile` ，內容為：<br>
@@ -115,10 +115,67 @@ Tag: #Fcitx #MATE #chewing
 
 4. 重開機即可生效。
 
-## 下載與解壓縮 /usr/ports 內容
-Tag: #ports #portsnap
+## 解除 Beep 聲
+- 暫時性：輸入 `kbdcontrol -b quiet.off`
+- 永久性： `# sysrc allscreens_kbdflags="-b quiet.off"`
+
+## 設定對時
+```
+# ntpdate clock.stdtime.gov.tw
+```
+
+更多對時伺服器：[點此](http://www.stdtime.gov.tw/chinese/bulletin/NTP%20promo.txt)
+
+## /usr/ports 內容使用
+Tag: #ports #portsnap #make
+
+### 下載 ports 內容
+(!) 若不是第一次使用 portsnap，請參閱下方的《更新 ports 內容》
+
+1. 抓取目前最新的 ports 資料：`# portsnap fetch`
+2. 解壓縮 ports 資料 `# portsnap extract`
+
+## 更新 ports 內容
+(!) 若是第一次使用 portsnap，請參閱上方的《下載 ports 內容》
+
+1. 擷取目前最新的 ports 資料：`# portsnap fetch`
+2. 更新 ports 資料 `# portsnap update`
+
+## 使用 ports 內容
+進入 `/usr/ports/(上級類別)/(軟體包名稱)`
+
+- 若要無提示安裝，請輸入 `export BATCH=YES` (可放置於 .profile 以每次開機都設定一次。)
+- 若要清除先前編譯的殘留物，請輸入 `make clean`
+- 若要安裝，請輸入 `make install`
+- 若要設定軟體包，請輸入 `make config`
+- 若要刪除軟體包設定檔，請輸入 `make rmconfig`
+- 如果你只是單純想編譯，輸入 `make install clean` 就足夠了。
 
 # 疑難雜解類別
 ## 無法使用 Xorg，顯示 `no screens found` 錯誤
+這裡假設您知道 ports 怎麼使用。
 
+1. 編譯並安裝 `/usr/ports/graphics/drm-next-kmod`
+2. 輸入以下指令，並確認是否能使用。
 
+   ```
+   kldunload i915kms
+   kldload /boot/modules/i915kms.ko
+   ```
+
+3. 每次開機都載入一次這個模組：`# sysrc kld_list="/boot/modules/i915kms.ko`
+
+## 解決無法播放影片或聲音的問題 `play interrupt timeout, channel dead`
+1. 將以下內容放在 `/boot/device.hints` 的底部：
+
+   ```
+   hint.hdac.0.msi=0
+   ```
+
+2. 將以下內容放在 `/etc/sysctl.conf` 的底部：
+
+   ```
+   dev.hdac.0.polling=1
+   ```
+
+3. 重開機即可測試效果。
