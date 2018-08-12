@@ -93,33 +93,35 @@ Tag: #Xorg #MATE #LightDM #sysrc
 Tag: #IBus #MATE #chewing
 
 1. 安裝 Ibus 與新酷音<br>
-   `# pkg install zh-fcitx zh-fcitx-chewing`
+   `# pkg install ibus chinese/ibus-chewing`
 
 2. 建立 `.xprofile` ，內容為：<br>
    ```
-   export GTK_IM_MODULE=fcitx
-   export GTK3_IM_MODULE=fcitx
-   export QT_IM_MODULE=fcitx
-   export XMODIFIERS="@im=fcitx"
-   fcitx &
+   export GTK_IM_MODULE=ibus
+   export QT_IM_MODULE=ibus
+   export XMODIFIERS="@im=ibus"
+   ibus-daemon &
    ```
 
 3. 開啟 `.xinitrc` ，在最上面增加：<br>
    ```
-   export GTK_IM_MODULE=fcitx
-   export GTK3_IM_MODULE=fcitx
-   export QT_IM_MODULE=fcitx
-   export XMODIFIERS="@im=fcitx"
-   fcitx &
+   export GTK_IM_MODULE=ibus
+   export QT_IM_MODULE=ibus
+   export XMODIFIERS="@im=ibus"
+   ibus-daemon &
    ```
 
 4. 重開機即可生效。
 
 ## 解除 Beep 聲
+Tag: #Beep #NoBeep #kbdcontrol #QuietOff
+
 - 暫時性：輸入 `kbdcontrol -b quiet.off`
 - 永久性： `# sysrc allscreens_kbdflags="-b quiet.off"`
 
 ## 設定對時
+Tag: #NTP #對時 #stdtime
+
 ```
 # ntpdate clock.stdtime.gov.tw
 ```
@@ -153,7 +155,8 @@ Tag: #ports #portsnap #make
 
 # 疑難雜解類別
 ## 無法使用 Xorg，顯示 `no screens found` 錯誤
-這裡假設您知道 ports 怎麼使用。
+這裡假設您知道 ports 怎麼使用。<br/>
+Tag: #Xorg #Error #Intel #NoScreensFound
 
 1. 編譯並安裝 `/usr/ports/graphics/drm-next-kmod`
 2. 輸入以下指令，並確認是否能使用。
@@ -165,7 +168,9 @@ Tag: #ports #portsnap #make
 
 3. 每次開機都載入一次這個模組：`# sysrc kld_list="/boot/modules/i915kms.ko`
 
-## 解決無法播放影片或聲音的問題 `play interrupt timeout, channel dead`
+## 解決無法播放影片或聲音的問題： `play interrupt timeout, channel dead`
+Tag: #hdac #PlayInterruptTimeout #ChannelDead
+
 1. 將以下內容放在 `/boot/device.hints` 的底部：
 
    ```
